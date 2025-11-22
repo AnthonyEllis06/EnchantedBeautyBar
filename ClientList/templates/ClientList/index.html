@@ -1,0 +1,24 @@
+{% comment %}
+This template displays a list of appointments with their details.
+It checks if there are any appointments in the 'appointmentList' context variable. If there are, it iterates through each appointment and displays its date, service provided, notes, and associated client.
+If there are no appointments, it shows a message indicating that there are no scheduled appointments.
+{% endcomment %}
+
+{% if appointmentList %}
+<ul>
+{% for appt in appointmentList %}
+    <li style="margin-bottom: 15px;">            
+        <strong>Date:</strong> {{ appt.appointment_date|date:"F j, Y, P" }}
+        <br>
+        <strong>Service:</strong> {{ appt.service_provided }}
+        <br>
+        <strong>Notes:</strong> {{ appt.notes|linebreaksbr|default:"No notes" }}
+        <br>
+        <strong>Client:</strong> {{ appt.client|linebreaksbr|default:"No client" }}
+    </li>
+{% endfor %}
+</ul>
+{% else %}
+    <p>There are has no appointments scheduled.</p>
+{% endif %}
+
