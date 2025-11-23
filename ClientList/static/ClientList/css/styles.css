@@ -1,0 +1,50 @@
+/* Adding flavor to the soup */
+body{
+    font-family: Arial, sans-serif;
+    background-color: lightpink;
+    padding: 20px;
+}
+
+.container{
+    max-width: 800px;
+    margin: auto;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.form-selection {
+    margin-top: 20px;
+    padding-top: 10px;
+    border-top: 1px solid #ccc;
+}
+.input-group {
+    margin-bottom: 15px;
+}
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+}
+button {
+    background-color: lightcoral;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+button:hover {
+    background-color: coral;
+}
+table{
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
