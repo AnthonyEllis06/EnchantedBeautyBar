@@ -76,12 +76,17 @@ function Scheduler() {
             alert("First name and last name are required.");
             return;
         }
+        //form data to return
+        const payload = { ...clientForm };
+        if(payload.dob === ""){
+            payload.dob = null;
+        }
 
         //send back to server
         fetch('/clientlist/api/clients/', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(clientForm)
+            body: JSON.stringify(payload)
         })
         .then(res => res.json())
         .then(data => {

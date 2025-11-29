@@ -1,10 +1,11 @@
-/* Adding flavor to the soup */
+/*Style sheet for the different ui components*/
+/*Entire page primarily used for background adn title*/
 body{
     font-family: Arial, sans-serif;
     background-color: lightpink;
     padding: 20px;
 }
-
+/*general container style*/
 .container{
     max-width: 800px;
     margin: auto;
@@ -13,25 +14,29 @@ body{
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
-
+/**/
 .form-selection {
     margin-top: 20px;
     padding-top: 10px;
     border-top: 1px solid #ccc;
 }
+/*general input group style*/
 .input-group {
     margin-bottom: 15px;
 }
+/*general label style*/
 label {
     display: block;
     margin-bottom: 5px;
     font-weight: bold;
 }
+/*general input style*/
 input {
     width: 100%;
     padding: 8px;
     border: 1px solid #ccc;
 }
+/*General button style*/
 button {
     background-color: lightcoral;
     color: white;
@@ -40,9 +45,11 @@ button {
     cursor: pointer;
     border-radius: 5px;
 }
+/*Button styling during hover*/
 button:hover {
     background-color: coral;
 }
+/*Table styling*/
 table{
     width: 100%;
     border-collapse: collapse;

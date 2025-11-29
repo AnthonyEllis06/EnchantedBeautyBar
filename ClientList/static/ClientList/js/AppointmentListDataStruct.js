@@ -1,4 +1,5 @@
 export default class ClientListDataStruct {
+    //object model data struct for database
     constructor(date, time, client_id, clientName, notes) {
         this.id = Date.now();
         this.date = date;
@@ -7,6 +8,7 @@ export default class ClientListDataStruct {
         this.clientName = clientName;
         this.notes = notes;
     }
+    //appointment return info
     getAppointmentInfo() {
         return `Appointment for ${this.clientName} on ${this.date} at ${this.time}`;
     }

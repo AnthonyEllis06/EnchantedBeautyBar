@@ -14,6 +14,7 @@ export default class DoublyLinkedList {
         this.tail = null;
         this
     }
+    //add node
     add(data) {
         const newNode = new Node(data);
         if(!this.head) {
@@ -26,7 +27,7 @@ export default class DoublyLinkedList {
         }
         this.size++;
     }
-
+    //find node
     Find(id) {
         let current = this.head;
         while(current) {
@@ -37,6 +38,7 @@ export default class DoublyLinkedList {
         }
         return null;
     }
+    //remove node
     remove(id) {
         const nodeToRemove = this.Find(id);
         if(!nodeToRemove) return false;
@@ -53,7 +55,7 @@ export default class DoublyLinkedList {
         this.size--;
         return true;
     }
-    
+    //sends all nodes to an object array
     toArray() {
         const result = [];
         let current = this.head;

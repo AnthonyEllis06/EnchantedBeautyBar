@@ -3,6 +3,7 @@ version: '3.8'
 services:
   web:
     build: .
+    restart: always
     ports:
       - "8000:8000"
     volumes:
@@ -17,6 +18,7 @@ services:
       - my-postgres
   my-postgres:
     image: postgres:15
+    restart: always
     volumes:
       - db-data:/var/lib/postgresql/data
     environment:
