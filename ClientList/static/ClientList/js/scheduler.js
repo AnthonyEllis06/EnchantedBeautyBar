@@ -2,7 +2,7 @@ import ClientListDataStruct from "/static/ClientList/js/ClientListDataStruct.js"
 import AppointmentListDataStruct from "/static/ClientList/js/AppointmentListDataStruct.js";
 import DoublyLinkedList from "/static/ClientList/js/DoublyLinkedList.js";
 
-const { useState} = React;
+const { useState, useEffect} = React;
 function Scheduler() {
     const [clients, setClients] = useState(new DoublyLinkedList());
     const [appointments, setAppointments] = useState(new DoublyLinkedList());
@@ -25,6 +25,44 @@ function Scheduler() {
         notes: "",
     });
 
+    //useEffect to handle rebuilding the doubly linked list
+    useEffect(() => {
+        fetch('/clientlist/api/clients/')
+            .then(res => res.json())
+            .then(data => {
+                const newClientList = new DoublyLinkedList();
+                data.forEach(currClient => {
+                    const newClient = new ClientListDataStruct(
+                        currClient.first_name,
+                        currClient.last_name,
+                        currClient.phone_number,
+                        currClient.date_of_birth
+                    );
+                    newClient.id = currClient.id;
+                    newClientList.add(newClient);
+                });
+                setClients(newClientList);
+            });
+
+        fetch('/clientlist/api/appointments/')
+            .then(res => res.json())
+            .then(data => {
+                const newAppointmentList = new DoublyLinkedList();
+                data.forEach( currAppointment => {
+                    const newAppointment = new AppointmentListDataStruct(
+                        currAppointment.date,
+                        currAppointment.time,
+                        currAppointment.client_id,
+                        currAppointment.clientName,
+                        currAppointment.notes
+                    );
+                    newAppointment.id = currAppointment.id;
+                    newAppointmentList.add(newAppointment);
+                });
+                setAppointments(newAppointmentList);
+            });
+    }, []);
+
     //Handler functions
     // handle clear forms
     const clearForms = () => {
@@ -39,19 +77,29 @@ function Scheduler() {
             return;
         }
 
-        const newClient = new ClientListDataStruct(
-            clientForm.first_name,
-            clientForm.last_name,
-            clientForm.phone_number,
-            clientForm.dob
-        );
-        // DoublyLinked List implementation
-        const DoublyLinkedClients = new DoublyLinkedList();
-        clients.toArray().forEach(client => DoublyLinkedClients.add(client));
-        DoublyLinkedClients.add(newClient);
-        setClients(DoublyLinkedClients);
-        clearForms();
-    }; 
+        //send back to server
+        fetch('/clientlist/api/clients/', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(clientForm)
+        })
+        .then(res => res.json())
+        .then(data => {
+            const newClient = new ClientListDataStruct(
+                clientForm.first_name,
+                clientForm.last_name,
+                clientForm.phone_number,
+                clientForm.dob
+            );
+            newClient.id = data.id;
+            // DoublyLinked List implementation
+            const DoublyLinkedClients = new DoublyLinkedList();
+            clients.toArray().forEach(client => DoublyLinkedClients.add(client));
+            DoublyLinkedClients.add(newClient);
+            setClients(DoublyLinkedClients);
+            clearForms();
+        })
+}; 
     // handle select appointment
     const hangleSelectAppointment = (appointment) => {
         setSelectedAppointment(appointment);
@@ -69,30 +117,50 @@ function Scheduler() {
             alert("Date, time, and client are required.");
             return;
         }
-        const selectedClient = clients.toArray().find(c => c.id === parseInt(appointmentForm.client_id));
-        const clientName = selectedClient ? selectedClient.getFullName() : "";
-        const newAppointment = new AppointmentListDataStruct(
-            appointmentForm.date,
-            appointmentForm.time,
-            appointmentForm.client_id,
-            clientName,
-            appointmentForm.notes
-        );
-        // DoublyLinked List reuse for polymorphism
-        const DoublyLinkedAppointments = new DoublyLinkedList();
-        appointments.toArray().forEach(appt => DoublyLinkedAppointments.add(appt));
-        DoublyLinkedAppointments.add(newAppointment);
-        setAppointments(DoublyLinkedAppointments);
-        clearForms
+        //send to api to send to database
+        fetch('/clientlist/api/appointments/',{
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(appointmentForm)
+        })
+        .then(res => res.json())
+        .then(data => {
+            const selectedClient = clients.toArray().find(currClient => currClient.id === parseInt(appointmentForm.client_id));
+            const clientName = selectedClient ? selectedClient.getFullName() : "";
+            const newAppointment = new AppointmentListDataStruct(
+                appointmentForm.date,
+                appointmentForm.time,
+                appointmentForm.client_id,
+                clientName,
+                appointmentForm.notes
+            );
+            newAppointment.id = data.id
+            // DoublyLinked List reuse for polymorphism
+            const DoublyLinkedAppointments = new DoublyLinkedList();
+            appointments.toArray().forEach(appt => DoublyLinkedAppointments.add(appt));
+            DoublyLinkedAppointments.add(newAppointment);
+            setAppointments(DoublyLinkedAppointments);
+            clearForms();
+        });
+        
     };
     // Handle update appointment
     const handleUpdateAppointment = () => {
         if(!selectedAppointment) return;
-        const selectedAppointmentClient = clients.toArray().find(c => c.id === parseInt(appointmentForm.client_id));
-        const clientName = selectedAppointmentClient ? selectedAppointmentClient.getFullName() : "";
-        const doublyUpdatedAppointments = new DoublyLinkedList();
+        const url = `/clientlist/api/appointments/${selectedAppointment.id}/`;
+        //updated to update database also
+        fetch(url, {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(appointmentForm)
+        })
+        .then(res => res.json())
+        .then(data =>{
+            const selectedAppointmentClient = clients.toArray().find(c => c.id === parseInt(appointmentForm.client_id));
+            const clientName = selectedAppointmentClient ? selectedAppointmentClient.getFullName() : "";
+            const doublyUpdatedAppointments = new DoublyLinkedList();
         
-        appointments.toArray().forEach(appt => {
+            appointments.toArray().forEach(appt => {
             //scans through appointments to find the selected appointment to update while also adding all other unchanged appointments to the new doubly linked list
             if(appt.id === selectedAppointment.id) {
                 const updated = new AppointmentListDataStruct(
@@ -111,18 +179,28 @@ function Scheduler() {
         });
         setAppointments(doublyUpdatedAppointments);
         clearForms();
+        })
+        
     }
     // handle delete appointment
     const handleDeleteAppointment = () => {
         if(!selectedAppointment) return;
-        const DoublyLinkedAppointments = new DoublyLinkedList();
-        appointments.toArray().forEach(appt => {
+        const url = `/clientlist/api/appointments/${selectedAppointment.id}/`;
+        fetch(url, {
+            method: 'DELETE',
+        })
+        .then(res => res.json())
+        .then(data => {
+            const DoublyLinkedAppointments = new DoublyLinkedList();
+            appointments.toArray().forEach(appt => {
             DoublyLinkedAppointments.add(appt);
-        });
+            });
 
-        DoublyLinkedAppointments.remove(selectedAppointment.id);
-        setAppointments(DoublyLinkedAppointments);
-        clearForms();
+            DoublyLinkedAppointments.remove(selectedAppointment.id);
+            setAppointments(DoublyLinkedAppointments);
+            clearForms();
+        })
+        
     };
     
     // RENDER!!!

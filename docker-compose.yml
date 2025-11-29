@@ -7,4 +7,21 @@ services:
       - "8000:8000"
     volumes:
       - .:/app
+    environment:
+      - POSTGRES_DB=enchantedclientsdb
+      - POSTGRES_USER=myuser
+      - POSTGRES_PASSWORD=mypassword
+      - POSTGRES_HOST=my-postgres
     command: python manage.py runserver 0.0.0.0:8000
+    depends_on:
+      - my-postgres
+  my-postgres:
+    image: postgres:15
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=enchantedclientsdb
+      - POSTGRES_USER=myuser
+      - POSTGRES_PASSWORD=mypassword
+volumes:
+  db-data:
