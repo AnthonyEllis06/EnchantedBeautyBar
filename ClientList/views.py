@@ -6,7 +6,7 @@ import json
 # Contains API for connecting to DB
 # View for the client list index page
 def index(request):
-    return render(request, 'clientlist/index.html')
+    return render(request, 'ClientList/index.html')
 #client api connection
 @csrf_exempt
 def client_api(request):
