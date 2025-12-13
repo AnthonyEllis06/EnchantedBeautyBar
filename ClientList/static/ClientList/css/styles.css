@@ -2,7 +2,7 @@
 /*Entire page primarily used for background adn title*/
 body{
     font-family: Arial, sans-serif;
-    background-color: lightpink;
+    background-color: rgb(91, 69, 94);
     padding: 20px;
 }
 /*general container style*/
@@ -38,7 +38,7 @@ input {
 }
 /*General button style*/
 button {
-    background-color: lightcoral;
+    background-color: rgb(87, 39, 25);
     color: white;
     border: none;
     padding: 10px 15px;
