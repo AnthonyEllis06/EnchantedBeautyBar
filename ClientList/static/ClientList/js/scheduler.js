@@ -3,6 +3,10 @@ import AppointmentListDataStruct from "/static/ClientList/js/AppointmentListData
 import DoublyLinkedList from "/static/ClientList/js/DoublyLinkedList.js";
 
 const { useState, useEffect} = React;
+/**
+ *  Scheduler Component
+ * @returns {JSX.Element} The rendered Scheduler component.
+ */
 function Scheduler() {
     const [clients, setClients] = useState(new DoublyLinkedList());
     const [appointments, setAppointments] = useState(new DoublyLinkedList());

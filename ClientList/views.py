@@ -10,6 +10,14 @@ def index(request):
 #client api connection
 @csrf_exempt
 def client_api(request):
+    """Client list api connection
+    
+    Args:
+        request (HttpRequest): The HTTP request can only be made to get a client or create a new client.
+
+    Returns:
+        JsonResponse: The JSON response containing client data.
+    """
     #GET
     if request.method == 'GET':
         clients = Client.objects.all().values()
@@ -30,6 +38,14 @@ def client_api(request):
 #appointment api connection    
 @csrf_exempt
 def appointment_api(request):
+    """Appointment list api connection
+
+    Args:
+        request (HttpRequest): The HTTP request can only be made to get an appointment or create a new appointment.
+
+    Returns:
+        JsonResponse: The JSON response containing appointment data.
+    """
     #GET
     if request.method == 'GET':
         appointments = Appointment.objects.all()
@@ -59,6 +75,15 @@ def appointment_api(request):
         })
 @csrf_exempt
 def update_delete_AppointmentAPI(request, id):
+    """Update and delete appointment list connection
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+        id (int): The ID of the appointment to update or delete.
+
+    Returns:
+        JsonResponse: The JSON response containing the result of the operation.
+    """
     appointment = Appointment.objects.get(id = id)
     #update
     if request.method == 'PUT':
